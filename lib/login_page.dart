@@ -1,16 +1,41 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'effects/neon_card/neon_card.dart';
 import 'effects/neon_card/neon_text.dart';
-import 'sign_up_page.dart'; // Ensure this is imported correctly
+import 'sign_up_page.dart';
 
-class LoginPage extends StatelessWidget {
+class LoginPage extends StatefulWidget {
+  @override
+  _LoginPageState createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> {
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  bool _isFirebaseInitialized = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _initializeFirebase();
+  }
+
+  Future<void> _initializeFirebase() async {
+    await Firebase.initializeApp();
+    setState(() {
+      _isFirebaseInitialized = true;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
+    if (!_isFirebaseInitialized) {
+      return Center(child: CircularProgressIndicator());
+    }
+
     return Scaffold(
-      backgroundColor: Colors.black, // Black background
+      backgroundColor: Colors.black,
       body: Center(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -18,37 +43,32 @@ class LoginPage extends StatelessWidget {
             alignment: Alignment.center,
             child: SingleChildScrollView(
               child: NeonCard(
-                intensity: 0.7, // Increased intensity for more glow
-                glowSpread: 0.6, // Decreased glow spread for sharper effect
+                intensity: 0.7,
+                glowSpread: 0.6,
                 child: Padding(
-                  padding: const EdgeInsets.all(
-                      24.0), // Reduced padding to make it smaller
+                  padding: const EdgeInsets.all(24.0),
                   child: ConstrainedBox(
                     constraints: BoxConstraints(
-                      maxWidth: 400, // Max width for better control
-                      maxHeight: 450, // Max height to avoid it being too tall
+                      maxWidth: 400,
+                      maxHeight: 450,
                     ),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        // Neon Gradient Title using GradientText - "TripSync"
                         GradientText(
                           text: 'TripSync',
-                          fontSize: 32, // Adjusted font size
+                          fontSize: 32,
                           gradientColors: [
-                            Color.fromARGB(255, 255, 41, 117), // Pink
-                            Color.fromARGB(255, 9, 221, 222), // Cyan
+                            Color.fromARGB(255, 255, 41, 117),
+                            Color.fromARGB(255, 9, 221, 222),
                             Colors.blueAccent,
                           ],
                         ),
-                        SizedBox(height: 20), // Reduced height between elements
-
-                        // Username Field with Gradient Text and Neon Card
+                        SizedBox(height: 20),
                         TextField(
                           controller: _usernameController,
-                          style: TextStyle(
-                              color: Colors.white), // White text color
+                          style: TextStyle(color: Colors.white),
                           decoration: InputDecoration(
                             labelText: 'Username',
                             labelStyle: TextStyle(color: Colors.white),
@@ -56,20 +76,16 @@ class LoginPage extends StatelessWidget {
                             filled: true,
                             fillColor: Colors.black45,
                             border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(
-                                  6), // Smaller border radius
+                              borderRadius: BorderRadius.circular(6),
                               borderSide: BorderSide.none,
                             ),
                           ),
                         ),
-                        SizedBox(height: 16), // Reduced height between elements
-
-                        // Password Field with Gradient Text and Neon Card
+                        SizedBox(height: 16),
                         TextField(
                           controller: _passwordController,
                           obscureText: true,
-                          style: TextStyle(
-                              color: Colors.white), // White text color
+                          style: TextStyle(color: Colors.white),
                           decoration: InputDecoration(
                             labelText: 'Password',
                             labelStyle: TextStyle(color: Colors.white),
@@ -77,32 +93,38 @@ class LoginPage extends StatelessWidget {
                             filled: true,
                             fillColor: Colors.black45,
                             border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(
-                                  6), // Smaller border radius
+                              borderRadius: BorderRadius.circular(6),
                               borderSide: BorderSide.none,
                             ),
                           ),
                         ),
-                        SizedBox(height: 16), // Reduced height between elements
-
-                        // Login Button with updated 'backgroundColor' instead of 'primary'
+                        SizedBox(height: 16),
                         ElevatedButton(
-                          onPressed: () {
-                            // Handle login logic and navigate to home screen
-                            Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) =>
-                                    HomePage(), // Navigate to HomePage
-                              ),
+                          onPressed: () async {
+                            bool loginSuccessful = await _loginWithFirestore(
+                              _usernameController.text,
+                              _passwordController.text,
                             );
+
+                            if (loginSuccessful) {
+                              Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => HomePage(),
+                                ),
+                              );
+                            } else {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text("Invalid credentials"),
+                                ),
+                              );
+                            }
                           },
                           style: ElevatedButton.styleFrom(
-                            backgroundColor:
-                                Colors.blueAccent, // Corrected parameter name
+                            backgroundColor: Colors.blueAccent,
                             shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(
-                                  6), // Smaller border radius
+                              borderRadius: BorderRadius.circular(6),
                             ),
                             padding: EdgeInsets.symmetric(
                                 vertical: 12, horizontal: 50),
@@ -112,17 +134,13 @@ class LoginPage extends StatelessWidget {
                             style: TextStyle(fontSize: 18, color: Colors.white),
                           ),
                         ),
-                        SizedBox(height: 16), // Reduced height between elements
-
-                        // Forgot Password Link
+                        SizedBox(height: 16),
                         GestureDetector(
                           onTap: () {
-                            // Handle forgot password logic (e.g., navigate to reset page)
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) =>
-                                    ForgotPasswordPage(), // Navigate to Forgot Password Page
+                                builder: (context) => ForgotPasswordPage(),
                               ),
                             );
                           },
@@ -135,17 +153,13 @@ class LoginPage extends StatelessWidget {
                             ),
                           ),
                         ),
-                        SizedBox(height: 10), // Reduced height between elements
-
-                        // Create Account Link
+                        SizedBox(height: 10),
                         GestureDetector(
                           onTap: () {
-                            // Navigate to Create Account Page
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) =>
-                                    CreateAccountPage(), // Correct navigation
+                                builder: (context) => CreateAccountPage(),
                               ),
                             );
                           },
@@ -168,6 +182,20 @@ class LoginPage extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  Future<bool> _loginWithFirestore(String username, String password) async {
+    try {
+      final querySnapshot = await FirebaseFirestore.instance
+          .collection('signup_details')
+          .where('username', isEqualTo: username)
+          .where('password', isEqualTo: password)
+          .get();
+      return querySnapshot.docs.isNotEmpty;
+    } catch (e) {
+      print('Error logging in with Firestore: $e');
+      return false;
+    }
   }
 }
 
@@ -202,5 +230,3 @@ class ForgotPasswordPage extends StatelessWidget {
     );
   }
 }
-
-// CreateAccountPage (Sign Up Page)
