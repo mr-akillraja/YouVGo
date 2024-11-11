@@ -1,39 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'home_page.dart'; // Make sure to update this path as per your project structure
 import 'effects/neon_card/neon_card.dart';
 import 'effects/neon_card/neon_text.dart';
 import 'sign_up_page.dart';
 
-class LoginPage extends StatefulWidget {
-  @override
-  _LoginPageState createState() => _LoginPageState();
-}
-
-class _LoginPageState extends State<LoginPage> {
+class LoginPage extends StatelessWidget {
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  bool _isFirebaseInitialized = false;
-
-  @override
-  void initState() {
-    super.initState();
-    _initializeFirebase();
-  }
-
-  Future<void> _initializeFirebase() async {
-    await Firebase.initializeApp();
-    setState(() {
-      _isFirebaseInitialized = true;
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
-    if (!_isFirebaseInitialized) {
-      return Center(child: CircularProgressIndicator());
-    }
-
     return Scaffold(
       backgroundColor: Colors.black,
       body: Center(
@@ -101,6 +79,7 @@ class _LoginPageState extends State<LoginPage> {
                         SizedBox(height: 16),
                         ElevatedButton(
                           onPressed: () async {
+                            // Call the Firestore login function
                             bool loginSuccessful = await _loginWithFirestore(
                               _usernameController.text,
                               _passwordController.text,
@@ -110,7 +89,7 @@ class _LoginPageState extends State<LoginPage> {
                               Navigator.pushReplacement(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => HomePage(),
+                                  builder: (context) => YouVGoHomePage(),
                                 ),
                               );
                             } else {
@@ -184,34 +163,22 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
+  // Firestore login function
   Future<bool> _loginWithFirestore(String username, String password) async {
     try {
+      // Retrieve user document with matching username
       final querySnapshot = await FirebaseFirestore.instance
           .collection('signup_details')
           .where('username', isEqualTo: username)
           .where('password', isEqualTo: password)
           .get();
+
+      // Check if a matching document was found
       return querySnapshot.docs.isNotEmpty;
     } catch (e) {
       print('Error logging in with Firestore: $e');
       return false;
     }
-  }
-}
-
-// Placeholder for HomePage after login
-class HomePage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.black,
-      body: Center(
-        child: Text(
-          'Home Page',
-          style: TextStyle(color: Colors.white, fontSize: 24),
-        ),
-      ),
-    );
   }
 }
 
