@@ -1,29 +1,33 @@
 import 'package:flutter/material.dart';
+import 'profile_page.dart';
 
 class YouVGoHomePage extends StatelessWidget {
+  final Color primaryColor = Color.fromARGB(255, 0, 0, 0);
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor: Color(0xFF0F4C81),
-        title: Text('TripSync', style: TextStyle(fontSize: 24)),
+        backgroundColor: primaryColor,
+        title:
+            Text('YouVGO', style: TextStyle(fontSize: 24, color: Colors.white)),
         centerTitle: true,
         leading: CircleAvatar(
           backgroundColor: Colors.white,
-          child: Icon(Icons.person, color: Colors.black),
+          child: Icon(Icons.person, color: primaryColor),
         ),
         actions: [
           IconButton(
-            icon: Icon(Icons.notifications),
+            icon: Icon(Icons.notifications, color: Colors.white),
             onPressed: () {},
           ),
           IconButton(
-            icon: Icon(Icons.group),
+            icon: Icon(Icons.group, color: Colors.white),
             onPressed: () {},
           ),
           IconButton(
-            icon: Icon(Icons.chat_bubble_outline),
+            icon: Icon(Icons.chat_bubble_outline, color: Colors.white),
             onPressed: () {},
           ),
         ],
@@ -36,9 +40,9 @@ class YouVGoHomePage extends StatelessWidget {
             TextField(
               decoration: InputDecoration(
                 filled: true,
-                fillColor: Colors.white,
+                fillColor: Colors.grey[200],
                 hintText: 'Search destination or People',
-                prefixIcon: Icon(Icons.search),
+                prefixIcon: Icon(Icons.search, color: primaryColor),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(20),
                   borderSide: BorderSide.none,
@@ -48,7 +52,10 @@ class YouVGoHomePage extends StatelessWidget {
             SizedBox(height: 20),
             Text(
               'Recommended',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: primaryColor),
             ),
             SizedBox(height: 16),
             Expanded(
@@ -76,28 +83,58 @@ class YouVGoHomePage extends StatelessWidget {
         ),
       ),
       bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: Color(0xFF0F4C81),
-        selectedItemColor: Colors.white,
-        unselectedItemColor: Colors.white70,
+        backgroundColor: primaryColor,
+        selectedItemColor: const Color.fromARGB(179, 1, 18, 51),
+        unselectedItemColor: const Color.fromARGB(179, 1, 18, 51),
         items: [
           BottomNavigationBarItem(
-            icon: Icon(Icons.home),
+            icon: IconButton(
+              icon: Icon(Icons.home),
+              onPressed: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => HomePage()));
+              },
+            ),
             label: '',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.grid_view),
+            icon: IconButton(
+              icon: Icon(Icons.grid_view),
+              onPressed: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => MapPage()));
+              },
+            ),
             label: '',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.add_circle, size: 40, color: Colors.white),
+            icon: IconButton(
+              icon: Icon(Icons.add_circle,
+                  size: 40, color: const Color.fromARGB(255, 3, 93, 228)),
+              onPressed: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => AddPostPage()));
+              },
+            ),
             label: '',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.favorite_border),
+            icon: IconButton(
+              icon: Icon(Icons.favorite_border),
+              onPressed: () {},
+            ),
             label: '',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.person),
+            icon: IconButton(
+              icon: Icon(Icons.person),
+              onPressed: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => ProfilePage_youvgo()));
+              },
+            ),
             label: '',
           ),
         ],
@@ -142,7 +179,8 @@ class YouVGoHomePage extends StatelessWidget {
             child: Row(
               children: [
                 CircleAvatar(
-                  child: Icon(Icons.person),
+                  child: Icon(Icons.person, color: primaryColor),
+                  backgroundColor: Colors.grey[200],
                 ),
                 SizedBox(width: 8),
                 Column(
@@ -153,8 +191,7 @@ class YouVGoHomePage extends StatelessWidget {
                         Text(
                           profileName,
                           style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                          ),
+                              fontWeight: FontWeight.bold, color: primaryColor),
                         ),
                         SizedBox(width: 4),
                         Icon(Icons.verified, color: Colors.blue, size: 16),
@@ -164,14 +201,12 @@ class YouVGoHomePage extends StatelessWidget {
                   ],
                 ),
                 Spacer(),
-                Icon(Icons.location_on, color: Colors.red),
+                Icon(Icons.location_on, color: primaryColor),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
-                    Text(
-                      location,
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    ),
+                    Text(location,
+                        style: TextStyle(fontWeight: FontWeight.bold)),
                     Text(date, style: TextStyle(color: Colors.grey)),
                   ],
                 ),
@@ -180,12 +215,12 @@ class YouVGoHomePage extends StatelessWidget {
           ),
           Padding(
             padding:
-                const EdgeInsets.only(left: 16.0, right: 16.0, bottom: 16.0),
+                const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
             child: ElevatedButton(
               onPressed: () {},
               child: Text('Request'),
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.blue,
+                backgroundColor: primaryColor,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(20),
                 ),
@@ -196,5 +231,34 @@ class YouVGoHomePage extends StatelessWidget {
         ],
       ),
     );
+  }
+}
+
+// Placeholder pages for navigation
+class HomePage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(appBar: AppBar(title: Text('Home Page')));
+  }
+}
+
+class MapPage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(appBar: AppBar(title: Text('Map Page')));
+  }
+}
+
+class AddPostPage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(appBar: AppBar(title: Text('Add Post Page')));
+  }
+}
+
+class ProfilePage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(appBar: AppBar(title: Text('Profile Page')));
   }
 }
