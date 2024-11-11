@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "996922060890",
+    "project_id": "youvgo-db4b9",
+    "storage_bucket": "youvgo-db4b9.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:996922060890:android:33969cf117c699a646e863",
+        "android_client_info": {
+          "package_name": "com.example.youvgo"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAaxwK7FttCBSWTIM9E_SdDgGJiIxFvdPI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

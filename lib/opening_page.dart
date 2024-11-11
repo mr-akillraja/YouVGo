@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 import 'login_page.dart';
 
 void main() {
-  runApp(YouVGoApp());
+  runApp(TripSyncApp());
 }
 
-class YouVGoApp extends StatelessWidget {
+class TripSyncApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -72,7 +72,7 @@ class _SplashScreenState extends State<SplashScreen>
               SizedBox(height: 30),
               // App Name
               Text(
-                'YouVGo',
+                'TripSync',
                 style: TextStyle(
                   fontSize: 40, // Adjusted font size
                   fontWeight: FontWeight.bold,
