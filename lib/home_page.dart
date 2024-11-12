@@ -207,7 +207,9 @@ class YouVGoHomePage extends StatelessWidget {
                   children: [
                     Text(location,
                         style: TextStyle(fontWeight: FontWeight.bold)),
-                    Text(date, style: TextStyle(color: Colors.grey)),
+                    Text(date,
+                        style: TextStyle(
+                            color: const Color.fromARGB(255, 17, 17, 17))),
                   ],
                 ),
               ],

@@ -63,13 +63,14 @@ class _SplashScreenState extends State<SplashScreen>
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              // App Logo
-              Icon(
-                Icons.airplanemode_active,
-                size: 120, // Adjusted logo size
-                color: Colors.white,
+              // App Logo from assets
+              Image.asset(
+                'assets/Logo_2.png',
+                width: 280, // Adjusted logo size to fit
+                height: 280,
+                fit: BoxFit.contain,
               ),
-              SizedBox(height: 30),
+              SizedBox(height: 10),
               // App Name
               Text(
                 'YouVGo',
