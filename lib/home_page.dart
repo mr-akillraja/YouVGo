@@ -7,18 +7,58 @@ class YouVGoHomePage extends StatefulWidget {
 
 class _YouVGoHomePageState extends State<YouVGoHomePage> {
   int _selectedIndex = 0;
+  int _messageCount = 5; // Example count for messages
+  int _friendRequestCount = 3; // Example count for friend requests
 
-  // List of pages for the navigation bar
-  final List<Widget> _pages = [
-    RecentsPage(),
-    FriendsPage(),
-    HighlightsPage(),
+  // List of pages corresponding to each tab
+  List<Widget> _pages = [
+    HomePage(),
+    LocationPage(),
+    AddPage(),
+    FavoritePage(),
+    ProfilePage(),
   ];
+
+  // Notification messages
+  bool hasNotifications = true;
+  bool hasFriendRequest = true;
 
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
     });
+  }
+
+  // Function to create a custom notification bubble with count
+  Widget _notificationBadge(String message, bool hasNotification, int count) {
+    return Positioned(
+      top: 0,
+      right: 0,
+      child: hasNotification
+          ? Container(
+              padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+              decoration: BoxDecoration(
+                color: const Color.fromARGB(255, 7, 216, 42),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Text(
+                '$count', // Display the count
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 12,
+                ),
+              ),
+            )
+          : SizedBox.shrink(),
+    );
+  }
+
+  // Navigate to the Message Page
+  void _navigateToMessagePage(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => MessagePage()),
+    );
   }
 
   @override
@@ -28,69 +68,55 @@ class _YouVGoHomePageState extends State<YouVGoHomePage> {
       appBar: AppBar(
         backgroundColor: Colors.black,
         elevation: 0,
-        title: Image.asset(
-          'assets/Logo_2.png', // Replace with your logo
-          height: 50,
-        ),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.notifications, color: Colors.white),
-            onPressed: () {},
-          ),
-          IconButton(
-            icon: Icon(Icons.people, color: Colors.white),
-            onPressed: () {},
-          ),
-          IconButton(
-            icon: Icon(Icons.chat, color: Colors.white),
-            onPressed: () {},
-          ),
-        ],
-      ),
-      body: SafeArea(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        title: Row(
           children: [
-            // Search Bar
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: TextField(
-                decoration: InputDecoration(
-                  hintText: 'Search destination or people',
-                  filled: true,
-                  fillColor: Colors.grey[800],
-                  prefixIcon: Icon(Icons.search, color: Colors.white70),
-                  hintStyle: TextStyle(color: Colors.white70),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(20),
-                    borderSide: BorderSide.none,
-                  ),
-                ),
-              ),
+            Image.asset(
+              'assets/Logo_2.png', // Replace with your logo
+              height: 50,
             ),
-
-            // Tab bar (We can keep it or remove if not needed)
-            Padding(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  TabButton(text: 'Recents', isSelected: _selectedIndex == 0),
-                  TabButton(text: 'Friends', isSelected: _selectedIndex == 1),
-                  TabButton(
-                      text: 'Highlights', isSelected: _selectedIndex == 2),
-                ],
+            SizedBox(width: 2),
+            Text(
+              'YouVGo',
+              style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+                fontSize: 27,
               ),
-            ),
-
-            // Display the selected page
-            Expanded(
-              child: _pages[_selectedIndex],
             ),
           ],
         ),
+        actions: [
+          Stack(
+            children: [
+              IconButton(
+                icon: Icon(Icons.notifications, color: Colors.white),
+                onPressed: () {},
+              ),
+              _notificationBadge(
+                  'New Likes', hasNotifications, 10), // Example count for likes
+            ],
+          ),
+          Stack(
+            children: [
+              IconButton(
+                icon: Icon(Icons.people, color: Colors.white),
+                onPressed: () {},
+              ),
+              _notificationBadge(
+                  'New Friend Requests', hasFriendRequest, _friendRequestCount),
+            ],
+          ),
+          IconButton(
+            icon: Icon(Icons.chat, color: Colors.white),
+            onPressed: () {
+              _navigateToMessagePage(context); // Navigate to message page
+            },
+          ),
+          _notificationBadge('New Messages', hasNotifications,
+              _messageCount), // Add notification badge for messages
+        ],
       ),
+      body: _pages[_selectedIndex], // Display the selected page
       // Bottom Navigation Bar
       bottomNavigationBar: BottomNavigationBar(
         backgroundColor: Colors.black, // Set the background color to black
@@ -102,15 +128,28 @@ class _YouVGoHomePageState extends State<YouVGoHomePage> {
         type: BottomNavigationBarType.fixed, // To prevent shifting icons
         items: [
           BottomNavigationBarItem(
-            icon: Icon(Icons.home),
+            icon: Icon(Icons.home, size: _selectedIndex == 0 ? 35 : 25),
             label: '',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.add),
+            icon: Icon(Icons.location_on, size: _selectedIndex == 1 ? 35 : 25),
             label: '',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.location_on),
+            icon: Icon(
+              Icons.add_box,
+              size: _selectedIndex == 2 ? 40 : 30,
+              color: _selectedIndex == 2 ? Colors.yellow : Colors.white70,
+            ),
+            label: '',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.favorite, size: _selectedIndex == 3 ? 35 : 25),
+            label: '',
+          ),
+          BottomNavigationBarItem(
+            icon:
+                Icon(Icons.account_circle, size: _selectedIndex == 4 ? 35 : 25),
             label: '',
           ),
         ],
@@ -119,33 +158,8 @@ class _YouVGoHomePageState extends State<YouVGoHomePage> {
   }
 }
 
-// Custom widget for tab buttons
-class TabButton extends StatelessWidget {
-  final String text;
-  final bool isSelected;
-
-  TabButton({required this.text, required this.isSelected});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.symmetric(vertical: 8, horizontal: 20),
-      decoration: BoxDecoration(
-        color: isSelected ? Colors.grey[850] : Colors.grey[700],
-        borderRadius: BorderRadius.circular(20),
-      ),
-      child: Text(
-        text,
-        style: TextStyle(
-          color: isSelected ? Colors.white : Colors.white70,
-        ),
-      ),
-    );
-  }
-}
-
-// Sample page for Recents
-class RecentsPage extends StatelessWidget {
+// Sample pages for the BottomNavigationBar
+class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListView(
@@ -169,27 +183,68 @@ class RecentsPage extends StatelessWidget {
   }
 }
 
-// Sample page for Friends
-class FriendsPage extends StatelessWidget {
+class LocationPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Center(
       child: Text(
-        'Friends Page',
+        'Location Page',
         style: TextStyle(color: Colors.white, fontSize: 24),
       ),
     );
   }
 }
 
-// Sample page for Highlights
-class HighlightsPage extends StatelessWidget {
+class AddPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Center(
       child: Text(
-        'Highlights Page',
+        'Add Page',
         style: TextStyle(color: Colors.white, fontSize: 24),
+      ),
+    );
+  }
+}
+
+class FavoritePage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Text(
+        'Favorite Page',
+        style: TextStyle(color: Colors.white, fontSize: 24),
+      ),
+    );
+  }
+}
+
+class ProfilePage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Text(
+        'Profile Page',
+        style: TextStyle(color: Colors.white, fontSize: 24),
+      ),
+    );
+  }
+}
+
+class MessagePage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.black,
+      appBar: AppBar(
+        backgroundColor: Colors.black,
+        title: Text('Messages', style: TextStyle(color: Colors.white)),
+      ),
+      body: Center(
+        child: Text(
+          'Message Page',
+          style: TextStyle(color: Colors.white, fontSize: 24),
+        ),
       ),
     );
   }
@@ -223,8 +278,7 @@ class PostCard extends StatelessWidget {
             child: Row(
               children: [
                 CircleAvatar(
-                  backgroundImage:
-                      AssetImage(imagePath), // profile image from assets
+                  backgroundImage: AssetImage(imagePath),
                 ),
                 SizedBox(width: 8),
                 Column(
@@ -275,7 +329,7 @@ class PostCard extends StatelessWidget {
                     ),
                   ),
                   child: Text(
-                    'Travel',
+                    date,
                     style: TextStyle(color: Colors.white),
                   ),
                 ),
