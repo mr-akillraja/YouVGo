@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:youvgo/home_page.dart';
+import 'package:youvgo/home_page.dart'; // Ensure this import is present
 import 'effects/neon_card/neon_card.dart';
 import 'effects/neon_card/neon_text.dart';
 import 'sign_up_page.dart';
+import 'home_page.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -58,7 +59,7 @@ class _LoginPageState extends State<LoginPage> {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         GradientText(
-                          text: 'TripSync',
+                          text: 'YouVGo',
                           fontSize: 32,
                           gradientColors: [
                             Color.fromARGB(255, 255, 41, 117),
@@ -108,6 +109,7 @@ class _LoginPageState extends State<LoginPage> {
                             );
 
                             if (loginSuccessful) {
+                              // Navigate to HomePage after successful login
                               Navigator.pushReplacement(
                                 context,
                                 MaterialPageRoute(
@@ -197,22 +199,6 @@ class _LoginPageState extends State<LoginPage> {
       print('Error logging in with Firestore: $e');
       return false;
     }
-  }
-}
-
-// Placeholder for HomePage after login
-class HomePage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.black,
-      body: Center(
-        child: Text(
-          'Home Page',
-          style: TextStyle(color: Colors.white, fontSize: 24),
-        ),
-      ),
-    );
   }
 }
 
