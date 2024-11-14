@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'profile_page.dart';
 
 class YouVGoHomePage extends StatefulWidget {
   @override
@@ -16,7 +17,7 @@ class _YouVGoHomePageState extends State<YouVGoHomePage> {
     LocationPage(),
     AddPage(),
     FavoritePage(),
-    ProfilePage(),
+    ProfilePage_youvgo(),
   ];
 
   // Notification messages
@@ -53,14 +54,6 @@ class _YouVGoHomePageState extends State<YouVGoHomePage> {
     );
   }
 
-  // Navigate to the Message Page
-  void _navigateToMessagePage(BuildContext context) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => MessagePage()),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -69,12 +62,13 @@ class _YouVGoHomePageState extends State<YouVGoHomePage> {
         backgroundColor: Colors.black,
         elevation: 0,
         title: Row(
+          crossAxisAlignment: CrossAxisAlignment.center, // Aligns vertically
           children: [
             Image.asset(
               'assets/Logo_2.png', // Replace with your logo
               height: 50,
             ),
-            SizedBox(width: 2),
+            SizedBox(width: 8),
             Text(
               'YouVGo',
               style: TextStyle(
@@ -85,18 +79,20 @@ class _YouVGoHomePageState extends State<YouVGoHomePage> {
             ),
           ],
         ),
+        automaticallyImplyLeading: false, // Remove back navigation button
         actions: [
           Stack(
+            alignment: Alignment.center, // Center-align icons
             children: [
               IconButton(
                 icon: Icon(Icons.notifications, color: Colors.white),
                 onPressed: () {},
               ),
-              _notificationBadge(
-                  'New Likes', hasNotifications, 10), // Example count for likes
+              _notificationBadge('New Likes', hasNotifications, 10),
             ],
           ),
           Stack(
+            alignment: Alignment.center, // Center-align icons
             children: [
               IconButton(
                 icon: Icon(Icons.people, color: Colors.white),
@@ -106,14 +102,17 @@ class _YouVGoHomePageState extends State<YouVGoHomePage> {
                   'New Friend Requests', hasFriendRequest, _friendRequestCount),
             ],
           ),
-          IconButton(
-            icon: Icon(Icons.chat, color: Colors.white),
-            onPressed: () {
-              _navigateToMessagePage(context); // Navigate to message page
-            },
+          Stack(
+            alignment: Alignment.center, // Center-align icons
+            children: [
+              IconButton(
+                icon: Icon(Icons.chat, color: Colors.white),
+                onPressed: () {},
+              ),
+              _notificationBadge('New Messages', hasNotifications,
+                  _messageCount), // Add notification badge for messages
+            ],
           ),
-          _notificationBadge('New Messages', hasNotifications,
-              _messageCount), // Add notification badge for messages
         ],
       ),
       body: _pages[_selectedIndex], // Display the selected page
@@ -219,37 +218,6 @@ class FavoritePage extends StatelessWidget {
   }
 }
 
-class ProfilePage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Text(
-        'Profile Page',
-        style: TextStyle(color: Colors.white, fontSize: 24),
-      ),
-    );
-  }
-}
-
-class MessagePage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.black,
-      appBar: AppBar(
-        backgroundColor: Colors.black,
-        title: Text('Messages', style: TextStyle(color: Colors.white)),
-      ),
-      body: Center(
-        child: Text(
-          'Message Page',
-          style: TextStyle(color: Colors.white, fontSize: 24),
-        ),
-      ),
-    );
-  }
-}
-
 // Custom widget for post card
 class PostCard extends StatelessWidget {
   final String username;
@@ -320,18 +288,9 @@ class PostCard extends StatelessWidget {
                 SizedBox(width: 16),
                 Icon(Icons.share, color: Colors.white),
                 Spacer(),
-                ElevatedButton(
-                  onPressed: () {},
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.grey[700],
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                  ),
-                  child: Text(
-                    date,
-                    style: TextStyle(color: Colors.white),
-                  ),
+                Text(
+                  date,
+                  style: TextStyle(color: Colors.white70),
                 ),
               ],
             ),

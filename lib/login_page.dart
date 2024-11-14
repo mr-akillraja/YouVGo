@@ -4,8 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:youvgo/home_page.dart'; // Ensure this import is present
 import 'effects/neon_card/neon_card.dart';
 import 'effects/neon_card/neon_text.dart';
-import 'sign_up_page.dart';
-import 'home_page.dart';
+import 'profile_creation.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -162,7 +161,7 @@ class _LoginPageState extends State<LoginPage> {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => CreateAccountPage(),
+                                builder: (context) => Profile_creation(),
                               ),
                             );
                           },
