@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'profile_page.dart';
+import 'friends_page.dart';
+import 'map_page.dart';
 
 class YouVGoHomePage extends StatefulWidget {
   @override
@@ -14,9 +16,9 @@ class _YouVGoHomePageState extends State<YouVGoHomePage> {
   // List of pages corresponding to each tab
   List<Widget> _pages = [
     HomePage(),
-    LocationPage(),
+    Map_Page(),
     AddPage(),
-    FavoritePage(),
+    FriendsPage(),
     ProfilePage_youvgo(),
   ];
 
