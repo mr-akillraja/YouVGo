@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'profile_page.dart';
-import 'friends_page.dart';
 import 'map_page.dart';
+import 'friends_page.dart';
+import 'timeline.dart';
 
 class YouVGoHomePage extends StatefulWidget {
   @override
@@ -10,21 +11,16 @@ class YouVGoHomePage extends StatefulWidget {
 
 class _YouVGoHomePageState extends State<YouVGoHomePage> {
   int _selectedIndex = 0;
-  int _messageCount = 5; // Example count for messages
-  int _friendRequestCount = 3; // Example count for friend requests
+  int _messageCount = 5;
 
-  // List of pages corresponding to each tab
+  // List of pages for bottom navigation
   List<Widget> _pages = [
     HomePage(),
     Map_Page(),
-    AddPage(),
+    // AddPage(),
     FriendsPage(),
     ProfilePage_youvgo(),
   ];
-
-  // Notification messages
-  bool hasNotifications = true;
-  bool hasFriendRequest = true;
 
   void _onItemTapped(int index) {
     setState(() {
@@ -32,27 +28,72 @@ class _YouVGoHomePageState extends State<YouVGoHomePage> {
     });
   }
 
-  // Function to create a custom notification bubble with count
-  Widget _notificationBadge(String message, bool hasNotification, int count) {
-    return Positioned(
-      top: 0,
-      right: 0,
-      child: hasNotification
-          ? Container(
-              padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-              decoration: BoxDecoration(
-                color: const Color.fromARGB(255, 7, 216, 42),
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Text(
-                '$count', // Display the count
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 12,
+  void _showNotifications(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: Colors.grey[900],
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+          title: Text(
+            'Notifications',
+            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+          ),
+          content: Container(
+            height: 150, // Adjust height based on notification count
+            width: 300,
+            child: ListView(
+              children: [
+                ListTile(
+                  leading: Icon(Icons.person, color: Colors.white),
+                  title: Text(
+                    'AkilRaja commented on your post!',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                  subtitle: Text(
+                    '2 hours ago',
+                    style: TextStyle(color: Colors.white70),
+                  ),
                 ),
+                ListTile(
+                  leading: Icon(Icons.favorite, color: Colors.red),
+                  title: Text(
+                    'Jakkariya liked your post!',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                  subtitle: Text(
+                    '5 hours ago',
+                    style: TextStyle(color: Colors.white70),
+                  ),
+                ),
+                ListTile(
+                  leading: Icon(Icons.share, color: Colors.blue),
+                  title: Text(
+                    'Your post has been shared!',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                  subtitle: Text(
+                    '1 day ago',
+                    style: TextStyle(color: Colors.white70),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: Text(
+                'Close',
+                style: TextStyle(color: Colors.white),
               ),
-            )
-          : SizedBox.shrink(),
+            ),
+          ],
+        );
+      },
     );
   }
 
@@ -64,10 +105,10 @@ class _YouVGoHomePageState extends State<YouVGoHomePage> {
         backgroundColor: Colors.black,
         elevation: 0,
         title: Row(
-          crossAxisAlignment: CrossAxisAlignment.center, // Aligns vertically
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Image.asset(
-              'assets/Logo_2.png', // Replace with your logo
+              'assets/Logo_2.png',
               height: 50,
             ),
             SizedBox(width: 8),
@@ -81,52 +122,34 @@ class _YouVGoHomePageState extends State<YouVGoHomePage> {
             ),
           ],
         ),
-        automaticallyImplyLeading: false, // Remove back navigation button
+        automaticallyImplyLeading: false,
         actions: [
-          Stack(
-            alignment: Alignment.center, // Center-align icons
-            children: [
-              IconButton(
-                icon: Icon(Icons.notifications, color: Colors.white),
-                onPressed: () {},
-              ),
-              _notificationBadge('New Likes', hasNotifications, 10),
-            ],
+          IconButton(
+            icon: Icon(Icons.notifications, color: Colors.white),
+            onPressed: () {
+              _showNotifications(context);
+            },
           ),
-          Stack(
-            alignment: Alignment.center, // Center-align icons
-            children: [
-              IconButton(
-                icon: Icon(Icons.people, color: Colors.white),
-                onPressed: () {},
-              ),
-              _notificationBadge(
-                  'New Friend Requests', hasFriendRequest, _friendRequestCount),
-            ],
-          ),
-          Stack(
-            alignment: Alignment.center, // Center-align icons
-            children: [
-              IconButton(
-                icon: Icon(Icons.chat, color: Colors.white),
-                onPressed: () {},
-              ),
-              _notificationBadge('New Messages', hasNotifications,
-                  _messageCount), // Add notification badge for messages
-            ],
+          IconButton(
+            icon: Icon(Icons.timeline, color: Colors.white),
+            onPressed: () {
+              // Navigate to TimelinePage
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => TimelinePage()),
+              );
+            },
           ),
         ],
       ),
-      body: _pages[_selectedIndex], // Display the selected page
-      // Bottom Navigation Bar
+      body: _pages[_selectedIndex],
       bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: Colors.black, // Set the background color to black
-        selectedItemColor: Colors.white, // Selected item color (white)
-        unselectedItemColor:
-            Colors.white70, // Unselected item color (light grey)
+        backgroundColor: Colors.black,
+        selectedItemColor: Colors.white,
+        unselectedItemColor: Colors.white70,
         currentIndex: _selectedIndex,
         onTap: _onItemTapped,
-        type: BottomNavigationBarType.fixed, // To prevent shifting icons
+        type: BottomNavigationBarType.fixed,
         items: [
           BottomNavigationBarItem(
             icon: Icon(Icons.home, size: _selectedIndex == 0 ? 35 : 25),
@@ -145,7 +168,7 @@ class _YouVGoHomePageState extends State<YouVGoHomePage> {
             label: '',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.favorite, size: _selectedIndex == 3 ? 35 : 25),
+            icon: Icon(Icons.people, size: _selectedIndex == 3 ? 35 : 25),
             label: '',
           ),
           BottomNavigationBarItem(
@@ -159,7 +182,7 @@ class _YouVGoHomePageState extends State<YouVGoHomePage> {
   }
 }
 
-// Sample pages for the BottomNavigationBar
+// Example HomePage
 class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -180,42 +203,6 @@ class HomePage extends StatelessWidget {
           imagePath: 'assets/taj_mahal.jpg',
         ),
       ],
-    );
-  }
-}
-
-class LocationPage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Text(
-        'Location Page',
-        style: TextStyle(color: Colors.white, fontSize: 24),
-      ),
-    );
-  }
-}
-
-class AddPage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Text(
-        'Add Page',
-        style: TextStyle(color: Colors.white, fontSize: 24),
-      ),
-    );
-  }
-}
-
-class FavoritePage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Text(
-        'Favorite Page',
-        style: TextStyle(color: Colors.white, fontSize: 24),
-      ),
     );
   }
 }

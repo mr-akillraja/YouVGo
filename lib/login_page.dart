@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:youvgo/home_page.dart'; // Ensure this import is present
 import 'effects/neon_card/neon_card.dart';
 import 'effects/neon_card/neon_text.dart';
@@ -15,11 +16,13 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   bool _isFirebaseInitialized = false;
+  final FlutterSecureStorage _secureStorage = FlutterSecureStorage();
 
   @override
   void initState() {
     super.initState();
     _initializeFirebase();
+    _checkAutoLogin(); // Check for stored credentials
   }
 
   Future<void> _initializeFirebase() async {
@@ -27,6 +30,22 @@ class _LoginPageState extends State<LoginPage> {
     setState(() {
       _isFirebaseInitialized = true;
     });
+  }
+
+  // Check if credentials are stored and auto-login
+  Future<void> _checkAutoLogin() async {
+    String? username = await _secureStorage.read(key: 'username');
+    String? password = await _secureStorage.read(key: 'password');
+
+    if (username != null && password != null) {
+      bool isLoggedIn = await _loginWithFirestore(username, password);
+      if (isLoggedIn) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => YouVGoHomePage()),
+        );
+      }
+    }
   }
 
   @override
@@ -108,6 +127,14 @@ class _LoginPageState extends State<LoginPage> {
                             );
 
                             if (loginSuccessful) {
+                              // Store credentials securely
+                              await _secureStorage.write(
+                                  key: 'username',
+                                  value: _usernameController.text);
+                              await _secureStorage.write(
+                                  key: 'password',
+                                  value: _passwordController.text);
+
                               // Navigate to HomePage after successful login
                               Navigator.pushReplacement(
                                 context,
