@@ -3,6 +3,7 @@ import 'profile_page.dart';
 import 'map_page.dart';
 import 'friends_page.dart';
 import 'timeline.dart';
+import 'add_page.dart';
 
 class YouVGoHomePage extends StatefulWidget {
   @override
@@ -17,7 +18,7 @@ class _YouVGoHomePageState extends State<YouVGoHomePage> {
   List<Widget> _pages = [
     HomePage(),
     Map_Page(),
-    // AddPage(),
+    AddPage(),
     FriendsPage(),
     ProfilePage_youvgo(),
   ];
